@@ -1,7 +1,7 @@
-import core from "@actions/core";
-import lo from "lodash";
+const core = require("@actions/core");
+const lo = require("lodash");
 
-import Action from "./src/action.js";
+const Action = require("./src/action.js");
 
 const main = async () => {
   let paths = core.getInput("paths");
@@ -14,7 +14,12 @@ const main = async () => {
   const action = new Action(paths, separator);
 
   try {
-    action.run();
+    const result = action.run();
+
+    core.setOutput("total", result.total);
+    core.setOutput("folders", result.folders);
+    core.setOutput("folders_no_base_path", result.foldersNoBasePath);
+    core.setOutput("folders_by_path", result.foldersByPath);
   } catch (e) {
     core.error(`[ERROR] Unexpected failure listing subfolders: ${e.message}`);
     process.exit(1);
