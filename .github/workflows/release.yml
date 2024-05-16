@@ -39,8 +39,8 @@ jobs:
         with:
           python-version: 3.11
 
-      - id: cz
-        name: Create bump and changelog
+      - name: Create bump and changelog
+        id: cz
         run: |
           python -m pip install -U commitizen
           cz bump --yes
@@ -86,4 +86,4 @@ jobs:
       - name: Build and push
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.REPO }}:latest --push .
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.REPO }}:${{ needs.bump_version.version }} --push .
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.REPO }}:${{ needs.bump_version.outputs.version }} --push .
