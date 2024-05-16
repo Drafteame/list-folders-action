@@ -8,7 +8,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "npx eslint --fix .",
     "format": "npx prettier --write .",
-    "build": "node_modules/.bin/ncc build index.cjs -o dist"
+    "build": "node_modules/.bin/ncc build index.js -o dist"
   },
   "repository": {
     "type": "git",
