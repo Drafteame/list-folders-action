@@ -1,4 +1,4 @@
-import fs, { existsSync } from "fs";
+import fs from "fs";
 import sinon from "sinon";
 
 import Action from "./action.js";
@@ -19,12 +19,6 @@ describe("Action Class", () => {
   };
 
   beforeEach(() => {
-    const existsSyncStub = sinon.stub(fs, "existsSync");
-    existsSyncStub.withArgs("/path1").returns(true);
-    existsSyncStub.withArgs("/path2").returns(true);
-    existsSyncStub.withArgs("path3").returns(false);
-
-    const readdirSyncStub = sinon.stub(fs, "readdirSync");
     const existsSyncStub = sinon.stub(fs, "existsSync");
     existsSyncStub.withArgs("/path1").returns(true);
     existsSyncStub.withArgs("/path2").returns(true);
