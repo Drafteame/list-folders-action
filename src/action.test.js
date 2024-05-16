@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { existsSync } from "fs";
 import sinon from "sinon";
 
 import Action from "./action.js";
@@ -18,7 +18,12 @@ describe("Action Class", () => {
   ];
 
   beforeEach(() => {
-    readdirSyncStub = sinon.stub(fs, "readdirSync");
+    const existsSyncStub = sinon.stub(fs, "existsSync");
+    existsSyncStub.withArgs("/path1").returns(true);
+    existsSyncStub.withArgs("/path2").returns(true);
+    existsSyncStub.withArgs("path3").returns(false);
+
+    const readdirSyncStub = sinon.stub(fs, "readdirSync");
 
     readdirSyncStub.withArgs("/path1").returns(mockSubFoldersPath1);
     readdirSyncStub.withArgs("/path2").returns(mockSubFoldersPath2);
@@ -79,5 +84,18 @@ describe("Action Class", () => {
       "subfolderA",
       "subfolderB",
     ]);
+  });
+
+  it("should trow an exception if base path not exists", () => {
+    const action = new Action(" path3 ", `\n`);
+
+    expect(action.run).toThrow(Error);
+  });
+
+  it("should ommit if basepath is empty", () => {
+    const action = new Action("", mockSeparator);
+    const result = action.run();
+
+    expect(result.total).toEqual(0);
   });
 });
