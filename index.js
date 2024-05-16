@@ -1,13 +1,13 @@
 import * as core from "@actions/core";
-import * as lo from "lodash";
 
 import Action from "./src/action.js";
+import { isEmpty } from "./src/utils.js";
 
 const main = async () => {
   let paths = core.getInput("paths");
   let separator = core.getInput("separator");
 
-  if (lo.isEmpty(separator)) {
+  if (isEmpty(separator)) {
     separator = `\n`;
   }
 
