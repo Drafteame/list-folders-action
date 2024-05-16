@@ -7,7 +7,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "npx eslint --fix .",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "build": "node_modules/.bin/ncc build index.cjs -o dist"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.38.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",

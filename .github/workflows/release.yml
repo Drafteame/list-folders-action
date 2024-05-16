@@ -27,16 +27,29 @@ jobs:
           token: "${{ secrets.ACCESS_TOKEN }}"
           ref: "main"
 
-      - name: Set up Python
-        uses: actions/setup-python@v5.1.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: 3.11
+          node-version: '20'
+
+      - name: Compile with ncc
+        run: npm run build
 
       - name: Config Git User
         run: |
           git config --local user.email "$GIT_USER_EMAIL"
           git config --local user.name "$GIT_USER_NAME"
           git config --local pull.ff only
+
+      - name: Add dist folder
+        run: |
+          git add -f dist/
+          git commit -m "ci: adding dist" || echo "No changes to commit"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.11
 
       - id: cz
         name: Create bump and changelog
