@@ -1,7 +1,7 @@
-const core = require("@actions/core");
-const lo = require("lodash");
+import * as core from "@actions/core";
+import * as lo from "lodash";
 
-const Action = require("./src/action.js");
+import Action from "./src/action.js";
 
 const main = async () => {
   let paths = core.getInput("paths");
