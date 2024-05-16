@@ -1,0 +1,29 @@
+name: "list-folders-action"
+
+description: "List sub-folders of all the given paths and return different formats of the founded sub-folders"
+
+branding:
+  icon: folder
+  color: blue
+
+inputs:
+  paths:
+    description: "List of paths to search for sub-folders"
+    required: true
+  separator:
+    description: 'Separator of the paths list (default is \n)'
+    required: false
+
+outputs:
+  total:
+    description: "Number of total sub-folders"
+  folders:
+    description: "JSON array with all sub-folders found including base path"
+  folders_no_base_path:
+    description: "JSON array with all sub-folders found without base path"
+  folders_by_path:
+    description: "JSON object in what each key is the base path and contains an array with his sub-folders"
+
+runs:
+  using: "node20"
+  main: "index.js"
