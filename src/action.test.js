@@ -92,7 +92,7 @@ describe("Action Class", () => {
     expect(action.run).toThrow(Error);
   });
 
-  it("should ommit if basepath is empty", () => {
+  it("should omit if base path is empty", () => {
     const action = new Action("", mockSeparator);
     const result = action.run();
 
