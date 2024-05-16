@@ -1,5 +1,7 @@
 import fs from "fs";
 
+import { isEmpty } from "./utils.js";
+
 /**
  * Main action
  */
@@ -39,6 +41,14 @@ export default class Action {
   }
 
   #getSubFolders(basePath) {
+    if (isEmpty(basePath)) {
+      return [];
+    }
+
+    if (!fs.existsSync(basePath)) {
+      throw new Error(`base path '${basePath}' not exists`);
+    }
+
     const files = fs.readdirSync(basePath);
 
     const subFolders = files
