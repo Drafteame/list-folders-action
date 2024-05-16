@@ -52,8 +52,16 @@ export default class Action {
     const files = fs.readdirSync(basePath);
 
     const subFolders = files
-      .filter((file) => file.isDirectory())
-      .map((folder) => folder.name);
+      .map((file) => {
+        return {
+          name: file,
+          stats: fs.statSync(`${basePath}/${file}`),
+        };
+      })
+      .filter((file) => file.stats.isDirectory())
+      .map((file) => {
+        return file.name;
+      });
 
     return subFolders;
   }
