@@ -24,6 +24,12 @@ describe("Action Class", () => {
     existsSyncStub.withArgs("path3").returns(false);
 
     const readdirSyncStub = sinon.stub(fs, "readdirSync");
+    const existsSyncStub = sinon.stub(fs, "existsSync");
+    existsSyncStub.withArgs("/path1").returns(true);
+    existsSyncStub.withArgs("/path2").returns(true);
+    existsSyncStub.withArgs("path3").returns(false);
+
+    const readdirSyncStub = sinon.stub(fs, "readdirSync");
 
     readdirSyncStub.withArgs("/path1").returns(mockSubFoldersPath1);
     readdirSyncStub.withArgs("/path2").returns(mockSubFoldersPath2);
@@ -92,7 +98,7 @@ describe("Action Class", () => {
     expect(action.run).toThrow(Error);
   });
 
-  it("should omit if base path is empty", () => {
+  it("should ommit if basepath is empty", () => {
     const action = new Action("", mockSeparator);
     const result = action.run();
 
