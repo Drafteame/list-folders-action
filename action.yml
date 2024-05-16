@@ -25,5 +25,5 @@ outputs:
     description: "JSON object in what each key is the base path and contains an array with his sub-folders"
 
 runs:
-  using: "node20"
-  main: "dist/index.js"
+  using: "docker"
+  image: "Dockerfile"
