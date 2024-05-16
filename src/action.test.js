@@ -6,16 +6,17 @@ import Action from "./action.js";
 describe("Action Class", () => {
   const mockPaths = "/path1,/path2";
   const mockSeparator = ",";
-  const mockSubFoldersPath1 = [
-    { name: "subfolder1", isDirectory: () => true },
-    { name: "file1.txt", isDirectory: () => false },
-    { name: "subfolder2", isDirectory: () => true },
-  ];
-  const mockSubFoldersPath2 = [
-    { name: "subfolderA", isDirectory: () => true },
-    { name: "file2.txt", isDirectory: () => false },
-    { name: "subfolderB", isDirectory: () => true },
-  ];
+
+  const mockSubFoldersPath1 = {
+    subfolder1: { name: "subfolder1", isDirectory: () => true },
+    "file1.txt": { name: "file1.txt", isDirectory: () => false },
+    subfolder2: { name: "subfolder2", isDirectory: () => true },
+  };
+  const mockSubFoldersPath2 = {
+    subfolderA: { name: "subfolderA", isDirectory: () => true },
+    "file2.txt": { name: "file2.txt", isDirectory: () => false },
+    subfolderB: { name: "subfolderB", isDirectory: () => true },
+  };
 
   beforeEach(() => {
     const existsSyncStub = sinon.stub(fs, "existsSync");
@@ -31,8 +32,27 @@ describe("Action Class", () => {
 
     const readdirSyncStub = sinon.stub(fs, "readdirSync");
 
-    readdirSyncStub.withArgs("/path1").returns(mockSubFoldersPath1);
-    readdirSyncStub.withArgs("/path2").returns(mockSubFoldersPath2);
+    readdirSyncStub
+      .withArgs("/path1")
+      .returns(Object.keys(mockSubFoldersPath1));
+
+    readdirSyncStub
+      .withArgs("/path2")
+      .returns(Object.keys(mockSubFoldersPath2));
+
+    const statSyncStub = sinon.stub(fs, "statSync");
+
+    Object.keys(mockSubFoldersPath1).forEach((item) => {
+      statSyncStub
+        .withArgs(`/path1/${item}`)
+        .returns(mockSubFoldersPath1[item]);
+    });
+
+    Object.keys(mockSubFoldersPath2).forEach((item) => {
+      statSyncStub
+        .withArgs(`/path2/${item}`)
+        .returns(mockSubFoldersPath2[item]);
+    });
   });
 
   afterEach(() => {
@@ -103,5 +123,19 @@ describe("Action Class", () => {
     const result = action.run();
 
     expect(result.total).toEqual(0);
+  });
+});
+
+describe("Action Class no mocks", () => {
+  it("should list subfolders", () => {
+    const action = new Action("test", ",");
+    const result = action.run();
+
+    expect(result.total).toEqual(2);
+    expect(result.folders).toEqual(["test/sub1", "test/sub2"]);
+    expect(result.foldersNoBasePath).toEqual(["sub1", "sub2"]);
+    expect(result.foldersByPath).toEqual({
+      test: ["sub1", "sub2"],
+    });
   });
 });
