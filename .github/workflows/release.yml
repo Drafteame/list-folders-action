@@ -36,7 +36,9 @@ jobs:
         run: npm install
 
       - name: Compile with ncc
-        run: npm run build
+        run: |
+          rm -rf dist
+          npm run build
 
       - name: Config Git User
         run: |
