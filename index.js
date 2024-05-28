@@ -12,7 +12,7 @@ const main = async () => {
     separator = `\n`;
   }
 
-  const action = new Action(paths, separator);
+  const action = new Action(paths, separator, omit);
 
   try {
     const result = action.run();
