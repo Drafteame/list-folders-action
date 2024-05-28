@@ -10,6 +10,7 @@
 |-------------|--------------------------------------------|----------|---------|
 | `paths`     | List of paths to search for sub-folders    | true     |         |
 | `separator` | Separator of the paths list                | false    | `\n`    |
+| `omit`      | List of paths to omit from the search      | false    |         |
 
 ## Outputs
 
