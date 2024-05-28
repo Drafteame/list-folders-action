@@ -1,7 +1,8 @@
 import fs from "fs";
 import sinon from "sinon";
+import { expect } from "chai";
 
-import Action from "./action.js";
+import Action from "../src/action.js";
 
 describe("Action Class", () => {
   const mockPaths = "/path1,/path2";
@@ -57,36 +58,45 @@ describe("Action Class", () => {
     const action = new Action(mockPaths, mockSeparator);
     const result = action.run();
 
-    expect(result.foldersByPath).toHaveProperty("/path1");
-    expect(result.foldersByPath).toHaveProperty("/path2");
+    expect(result.foldersByPath).to.have.property("/path1");
+    expect(result.foldersByPath).to.have.property("/path2");
   });
 
   it("should list subfolders for each base path", () => {
     const action = new Action(mockPaths, mockSeparator);
     const result = action.run();
 
-    expect(result.foldersByPath["/path1"]).toEqual([
+    expect(result.foldersByPath["/path1"]).to.deep.equal([
       "subfolder1",
       "subfolder2",
     ]);
-    expect(result.foldersByPath["/path2"]).toEqual([
+    expect(result.foldersByPath["/path2"]).to.deep.equal([
       "subfolderA",
       "subfolderB",
     ]);
+  });
+
+  it("should omit specified subfolders", () => {
+    const omit = ["subfolder2", "subfolderB"];
+    const action = new Action(mockPaths, mockSeparator, omit);
+    const result = action.run();
+
+    expect(result.foldersByPath["/path1"]).to.deep.equal(["subfolder1"]);
+    expect(result.foldersByPath["/path2"]).to.deep.equal(["subfolderA"]);
   });
 
   it("should calculate the total number of subfolders correctly", () => {
     const action = new Action(mockPaths, mockSeparator);
     const result = action.run();
 
-    expect(result.total).toBe(4); // 2 subfolders in /path1 + 2 subfolders in /path2
+    expect(result.total).to.be.equal(4); // 2 subfolders in /path1 + 2 subfolders in /path2
   });
 
   it("should correctly format folders with base paths", () => {
     const action = new Action(mockPaths, mockSeparator);
     const result = action.run();
 
-    expect(result.folders).toEqual([
+    expect(result.folders).to.deep.equal([
       "/path1/subfolder1",
       "/path1/subfolder2",
       "/path2/subfolderA",
@@ -98,7 +108,7 @@ describe("Action Class", () => {
     const action = new Action(mockPaths, mockSeparator);
     const result = action.run();
 
-    expect(result.foldersNoBasePath).toEqual([
+    expect(result.foldersNoBasePath).to.deep.equal([
       "subfolder1",
       "subfolder2",
       "subfolderA",
@@ -109,27 +119,30 @@ describe("Action Class", () => {
   it("should trow an exception if base path not exists", () => {
     const action = new Action(" path3 ", `\n`);
 
-    expect(action.run).toThrow(Error);
+    expect(() => action.run()).to.throw(`base path 'path3' not exists`);
   });
 
   it("should omit if base path is empty", () => {
     const action = new Action("", mockSeparator);
     const result = action.run();
 
-    expect(result.total).toEqual(0);
+    expect(result.total).to.be.equal(0);
   });
 });
 
 describe("Action Class no mocks", () => {
   it("should list subfolders", () => {
-    const action = new Action("test", ",");
+    const action = new Action("test/testdata", ",");
     const result = action.run();
 
-    expect(result.total).toEqual(2);
-    expect(result.folders).toEqual(["test/sub1", "test/sub2"]);
-    expect(result.foldersNoBasePath).toEqual(["sub1", "sub2"]);
-    expect(result.foldersByPath).toEqual({
-      test: ["sub1", "sub2"],
+    expect(result.total).to.equal(2);
+    expect(result.folders).to.deep.equal([
+      "test/testdata/sub1",
+      "test/testdata/sub2",
+    ]);
+    expect(result.foldersNoBasePath).to.deep.equal(["sub1", "sub2"]);
+    expect(result.foldersByPath).to.deep.equal({
+      "test/testdata": ["sub1", "sub2"],
     });
   });
 });

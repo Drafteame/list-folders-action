@@ -13,6 +13,9 @@ inputs:
   separator:
     description: 'Separator of the paths list (default is \n)'
     required: false
+  omit:
+    description: 'List of subfolder names to be omited'
+    required: false
 
 outputs:
   total:

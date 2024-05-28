@@ -6,9 +6,10 @@ import { isEmpty } from "./utils.js";
  * Main action
  */
 export default class Action {
-  constructor(paths, separator) {
+  constructor(paths, separator, omit = []) {
     this._paths = paths;
     this._separator = separator;
+    this._omit = omit;
   }
 
   run() {
@@ -51,18 +52,18 @@ export default class Action {
 
     const files = fs.readdirSync(basePath);
 
-    const subFolders = files
+    return files
       .map((file) => {
         return {
           name: file,
           stats: fs.statSync(`${basePath}/${file}`),
         };
       })
-      .filter((file) => file.stats.isDirectory())
+      .filter((file) => {
+        return file.stats.isDirectory() && !this._omit.includes(file.name);
+      })
       .map((file) => {
         return file.name;
       });
-
-    return subFolders;
   }
 }

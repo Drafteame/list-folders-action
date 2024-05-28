@@ -6,6 +6,7 @@ import { isEmpty } from "./src/utils.js";
 const main = async () => {
   let paths = core.getInput("paths");
   let separator = core.getInput("separator");
+  let omit = core.getInput("omit").split(",");
 
   if (isEmpty(separator)) {
     separator = `\n`;
