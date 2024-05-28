@@ -132,17 +132,19 @@ describe("Action Class", () => {
 
 describe("Action Class no mocks", () => {
   it("should list subfolders", () => {
-    const action = new Action("test/testdata", ",");
+    const basePath = "tests/testdata";
+
+    const action = new Action(basePath, ",");
     const result = action.run();
 
     expect(result.total).to.equal(2);
     expect(result.folders).to.deep.equal([
-      "test/testdata/sub1",
-      "test/testdata/sub2",
+      `${basePath}/sub1`,
+      `${basePath}/sub2`,
     ]);
     expect(result.foldersNoBasePath).to.deep.equal(["sub1", "sub2"]);
     expect(result.foldersByPath).to.deep.equal({
-      "test/testdata": ["sub1", "sub2"],
+      "tests/testdata": ["sub1", "sub2"],
     });
   });
 });
