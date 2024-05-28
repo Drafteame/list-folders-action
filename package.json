@@ -1,6 +1,6 @@
 {
   "name": "list-folders-action",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "Github action that list subfolders of the specified paths",
   "type": "module",
   "main": "index.js",
