@@ -47,7 +47,7 @@ export default class Action {
     }
 
     if (!fs.existsSync(basePath)) {
-      throw new Error(`base path '${basePath}' not exists`);
+      return [];
     }
 
     const files = fs.readdirSync(basePath);

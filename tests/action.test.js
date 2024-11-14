@@ -116,10 +116,11 @@ describe("Action Class", () => {
     ]);
   });
 
-  it("should trow an exception if base path not exists", () => {
+  it("should not add any folder if path not exists", () => {
     const action = new Action(" path3 ", `\n`);
+    const result = action.run();
 
-    expect(() => action.run()).to.throw(`base path 'path3' not exists`);
+    expect(result.total).to.be.equal(0);
   });
 
   it("should omit if base path is empty", () => {

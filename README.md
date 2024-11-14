@@ -6,16 +6,16 @@
 
 ## Inputs
 
-| Name        | Description                                | Required | Default |
-|-------------|--------------------------------------------|----------|---------|
-| `paths`     | List of paths to search for sub-folders    | true     |         |
-| `separator` | Separator of the paths list                | false    | `\n`    |
-| `omit`      | List of paths to omit from the search      | false    |         |
+| Name        | Description                             | Required | Default |
+| ----------- | --------------------------------------- | -------- | ------- |
+| `paths`     | List of paths to search for sub-folders | true     |         |
+| `separator` | Separator of the paths list             | false    | `\n`    |
+| `omit`      | List of paths to omit from the search   | false    |         |
 
 ## Outputs
 
 | Name                   | Description                                                                            |
-|------------------------|----------------------------------------------------------------------------------------|
+| ---------------------- | -------------------------------------------------------------------------------------- |
 | `total`                | Number of total sub-folders                                                            |
 | `folders`              | JSON array with all sub-folders found including base path                              |
 | `folders_no_base_path` | JSON array with all sub-folders found without base path                                |
