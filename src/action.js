@@ -69,20 +69,19 @@ export default class Action {
     const files = fs.readdirSync(basePath);
     let folders = [];
 
-    files.forEach((file) => {
-      const fullPath = `${basePath}/${file}`;
+    files.forEach((entry) => {
+      const fullPath = `${basePath}/${entry}`;
       const stats = fs.statSync(fullPath);
 
-      if (
-        stats.isDirectory() &&
-        !this._omit.some((regex) => regex.test(file))
-      ) {
-        folders.push(file);
+      if (stats.isDirectory()) {
+        if (!this._omit.some((regex) => regex.test(entry))) {
+          folders.push(entry);
+        }
 
         if (this._recursive) {
           const subFolders = this.#getSubFolders(fullPath);
           folders.push(
-            ...subFolders.map((subFolder) => `${file}/${subFolder}`),
+            ...subFolders.map((subFolder) => `${entry}/${subFolder}`),
           );
         }
       }
