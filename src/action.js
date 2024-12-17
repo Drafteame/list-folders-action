@@ -1,26 +1,40 @@
 import fs from "fs";
-
-import { isEmpty } from "./utils.js";
+import lodash from "lodash";
 
 /**
- * Main action
+ * Action class for handling directory operations
+ * Manages listing subfolders from given paths with filtering and recursive options
  */
+
 export default class Action {
-  constructor(paths, separator, omit = []) {
+  /**
+   * Creates a new Action instance
+   * @param {string[]} paths - Base path(s) to search for subfolders
+   * @param {string} separator - Separator used to split multiple paths
+   * @param {string[]} omit - List of folder names to exclude
+   * @param {boolean} recursive - Whether to search recursively in subfolders
+   */
+  constructor(paths, omit = [], recursive = false) {
     this._paths = paths;
-    this._separator = separator;
     this._omit = omit;
+    this._recursive = recursive;
   }
 
+  /**
+   * Executes the folder search operation
+   * @returns {Object} Result containing:
+   *   - total: Total number of subfolders found
+   *   - folders: Array of full folder paths
+   *   - foldersNoBasePath: Array of relative folder paths
+   *   - foldersByPath: Object mapping base paths to their subfolders
+   */
   run() {
-    const basePaths = this.#splitBasePaths();
-
     let folders = [];
     let foldersNoBasePath = [];
     let foldersByPath = {};
     let total = 0;
 
-    basePaths.forEach((basePath) => {
+    this._paths.forEach((basePath) => {
       const subFolders = this.#getSubFolders(basePath);
 
       total += subFolders.length;
@@ -37,12 +51,14 @@ export default class Action {
     };
   }
 
-  #splitBasePaths() {
-    return this._paths.split(this._separator).map((path) => path.trim());
-  }
-
+  /**
+   * Gets all subfolders in the given base path, excluding omitted folders
+   * @param {string} basePath - Path to search for subfolders
+   * @returns {string[]} Array of subfolder names/paths relative to base path
+   * @private
+   */
   #getSubFolders(basePath) {
-    if (isEmpty(basePath)) {
+    if (lodash.isEmpty(basePath)) {
       return [];
     }
 
@@ -51,19 +67,24 @@ export default class Action {
     }
 
     const files = fs.readdirSync(basePath);
+    let folders = [];
 
-    return files
-      .map((file) => {
-        return {
-          name: file,
-          stats: fs.statSync(`${basePath}/${file}`),
-        };
-      })
-      .filter((file) => {
-        return file.stats.isDirectory() && !this._omit.includes(file.name);
-      })
-      .map((file) => {
-        return file.name;
-      });
+    files.forEach((file) => {
+      const fullPath = `${basePath}/${file}`;
+      const stats = fs.statSync(fullPath);
+
+      if (stats.isDirectory() && !this._omit.includes(file)) {
+        folders.push(file);
+
+        if (this._recursive) {
+          const subFolders = this.#getSubFolders(fullPath);
+          folders.push(
+            ...subFolders.map((subFolder) => `${file}/${subFolder}`),
+          );
+        }
+      }
+    });
+
+    return folders;
   }
 }

@@ -16,6 +16,9 @@ inputs:
   omit:
     description: "List of subfolder names to be omited"
     required: false
+  recursive:
+    description: "Whether to search for sub-folders recursively (default is false)"
+    required: false
 
 outputs:
   total:

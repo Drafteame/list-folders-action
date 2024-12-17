@@ -1,18 +1,16 @@
 import * as core from "@actions/core";
 
 import Action from "./src/action.js";
-import { isEmpty } from "./src/utils.js";
+import { getInput, getBooleanInput, getArrayInput } from "./src/utils.js";
 
 const main = async () => {
-  let paths = core.getInput("paths");
-  let separator = core.getInput("separator");
-  let omit = core.getInput("omit");
+  let separator = getInput("separator", `\n`);
 
-  if (isEmpty(separator)) {
-    separator = `\n`;
-  }
+  let paths = getArrayInput("paths", [], separator);
+  let omit = getArrayInput("omit", [], separator);
+  let recursive = getBooleanInput("recursive", false);
 
-  const action = new Action(paths, separator, omit);
+  const action = new Action(paths, omit, recursive);
 
   try {
     const result = action.run();
@@ -27,4 +25,6 @@ const main = async () => {
   }
 };
 
-main();
+(async () => {
+  await main();
+})();

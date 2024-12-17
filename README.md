@@ -6,11 +6,12 @@
 
 ## Inputs
 
-| Name        | Description                             | Required | Default |
-| ----------- | --------------------------------------- | -------- | ------- |
-| `paths`     | List of paths to search for sub-folders | true     |         |
-| `separator` | Separator of the paths list             | false    | `\n`    |
-| `omit`      | List of paths to omit from the search   | false    |         |
+| Name        | Description                                | Required | Default |
+| ----------- | ------------------------------------------ | -------- | ------- |
+| `paths`     | List of paths to search for sub-folders    | true     |         |
+| `separator` | Separator of the paths list                | false    | `\n`    |
+| `omit`      | List of paths to omit from the search      | false    |         |
+| `recursive` | Whether to search recursively in subfolder | false    | `false` |
 
 ## Outputs
 
