@@ -1,3 +1,8 @@
+## v1.1.1 (2024-12-17)
+
+
+- chore: change omits to use regexps (#18)
+
 ## v1.1.0 (2024-12-17)
 
 
