@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-env:
-  GIT_USER_EMAIL: ${{ secrets.GIT_EMAIL }}
-  GIT_USER_NAME: ${{ secrets.GIT_NAME }}
-
 permissions:
   contents: write
   packages: write
@@ -28,36 +24,32 @@ jobs:
           token: "${{ secrets.ACCESS_TOKEN }}"
           ref: "main"
 
-      - name: Config Git User
-        run: |
-          git config --local user.email "$GIT_USER_EMAIL"
-          git config --local user.name "$GIT_USER_NAME"
-          git config --local pull.ff only
-
-      - name: Set up Python
-        uses: actions/setup-python@v5.1.0
+      - id: cz
+        name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@0.23.0
         with:
-          python-version: 3.11
-
-      - name: Create bump and changelog
-        id: cz
-        run: |
-          python -m pip install -U commitizen
-          cz bump --yes
-          export REV=`cz version --project`
-          echo "version=\"v$REV\"" >> $GITHUB_OUTPUT
-
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          repository: "Drafteame/list-folders-action"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: "main"
-          directory: .
-          tags: true
+          git_name: ${{ secrets.GIT_NAME }}
+          git_email: ${{ secrets.GIT_EMAIL }}
+          changelog_increment_filename: body.md
 
       - name: Print Version
-        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
+        run: echo "Bumped to version ${{ env.REVISION }}"
+
+      - name: Trim body to 125000 characters
+        run: |
+          if [ $(wc -c < body.md) -gt 125000 ]; then
+            head -c 125000 body.md > body.md
+          fi
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: "body.md"
+          tag_name: ${{ env.REVISION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          make_latest: "true"
 
   build:
     runs-on: ubuntu-latest
