@@ -1,3 +1,8 @@
+## v1.1.2 (2024-12-17)
+
+
+- chore: traverse inside omited folders just dont show exact omited path on folder list (#19)
+
 ## v1.1.1 (2024-12-17)
 
 
