@@ -11,12 +11,12 @@ export default class Action {
    * Creates a new Action instance
    * @param {string[]} paths - Base path(s) to search for subfolders
    * @param {string} separator - Separator used to split multiple paths
-   * @param {string[]} omit - List of folder names to exclude
+   * @param {string[]} omit - List of regex patterns to exclude matching folders
    * @param {boolean} recursive - Whether to search recursively in subfolders
    */
   constructor(paths, omit = [], recursive = false) {
     this._paths = paths;
-    this._omit = omit;
+    this._omit = omit.map((pattern) => new RegExp(pattern));
     this._recursive = recursive;
   }
 
@@ -52,7 +52,7 @@ export default class Action {
   }
 
   /**
-   * Gets all subfolders in the given base path, excluding omitted folders
+   * Gets all subfolders in the given base path, excluding folders matching omit patterns
    * @param {string} basePath - Path to search for subfolders
    * @returns {string[]} Array of subfolder names/paths relative to base path
    * @private
@@ -73,7 +73,10 @@ export default class Action {
       const fullPath = `${basePath}/${file}`;
       const stats = fs.statSync(fullPath);
 
-      if (stats.isDirectory() && !this._omit.includes(file)) {
+      if (
+        stats.isDirectory() &&
+        !this._omit.some((regex) => regex.test(file))
+      ) {
         folders.push(file);
 
         if (this._recursive) {
